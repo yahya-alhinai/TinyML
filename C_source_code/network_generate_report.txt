@@ -1,0 +1,161 @@
+Neural Network Tools for STM32AI v1.6.0 (STM.ai v7.1.0-RC3)
+Created date          : 2022-09-30 23:48:49
+Parameters            : generate --name network -m C:/Users/alhinai/Desktop/saved_models/model_1.onnx --type onnx --compression 1 --verbosity 1 --workspace C:\Users\alhinai\AppData\Local\Temp\mxAI_workspace394554290392004368657809008578845 --output C:\Users\alhinai\.stm32cubemx\network_output
+
+Exec/report summary (generate)
+------------------------------------------------------------------------------------------------------------------------
+model file            : C:\Users\alhinai\Desktop\saved_models\model_1.onnx
+type                  : onnx
+c_name                : network
+compression           : None
+workspace dir         : C:\Users\alhinai\AppData\Local\Temp\mxAI_workspace394554290392004368657809008578845
+output dir            : C:\Users\alhinai\.stm32cubemx\network_output
+model_name            : model_1
+model_hash            : 903836ba8df9464c2cfac3294cce8cea
+input 1/1             : 'onnxMaxPool_0'
+                        1250 items, 4.88 KiB, ai_float, float, (1,1250,1,1), domain:user/
+output 1/1            : 'node_42'
+                        2 items, 8 B, ai_float, float, (1,1,1,2), domain:user/
+params #              : 479 items (1.87 KiB)
+macc                  : 12,671
+weights (ro)          : 1,836 B (1.79 KiB) / -80(-4.2%) vs original model (1 segment)
+activations (rw)      : 2,156 B (2.11 KiB) (1 segment)
+ram (total)           : 7,164 B (7.00 KiB) = 2,156 + 5,000 + 8
+
+Model name - model_1 ['onnxMaxPool_0'] ['node_42']
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+id   layer (type)                               oshape         param/size   macc    connected to                |   c_size          c_macc            c_type     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12   fc1_1_weight (Placeholder)                 (1,50,1,2)     100/400                                          |   -400(-100.0%)                    
+     fc1_1_bias (Placeholder)                   (1,1,1,2)      2/8                                              |   -8(-100.0%)                      
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+0    onnxMaxPool_0 (Input)                      (1,1250,1,1)                                                    |                                    
+     input (Pool)                               (1,312,1,1)                 1,560   onnxMaxPool_0               |                                     pool()[0]  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1    input_3 (ScaleBias)                        (1,312,1,1)    2/8          624     input                       |                                     bn()[1]    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2    input_7 (Conv2D)                           (1,103,1,5)    35/140       3,095   input_3                     |                   +515(+16.6%)      conv2d()[2]
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3    onnxBatchNormalization_32 (Nonlinearity)   (1,103,1,5)                 515     input_7                     |                   -515(-100.0%)    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4    input_11 (ScaleBias)                       (1,103,1,5)    10/40        1,030   onnxBatchNormalization_32   |   -40(-100.0%)    -1,030(-100.0%)  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5    input_15 (Conv2D)                          (1,33,1,5)     155/620      4,955   input_11                    |                   +165(+3.3%)       conv2d()[3]
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6    onnxBatchNormalization_35 (Nonlinearity)   (1,33,1,5)                  165     input_15                    |                   -165(-100.0%)    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7    input_19 (ScaleBias)                       (1,33,1,5)     10/40        330     onnxBatchNormalization_35   |   -40(-100.0%)    -330(-100.0%)    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8    input_23 (Conv2D)                          (1,10,1,5)     155/620      1,505   input_19                    |                   +50(+3.3%)        conv2d()[4]
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9    onnxBatchNormalization_38 (Nonlinearity)   (1,10,1,5)                  50      input_23                    |                   -50(-100.0%)     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10   onnxReshape_39 (ScaleBias)                 (1,10,1,5)     10/40        100     onnxBatchNormalization_38   |                                     bn()[5]    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+11   input_27 (Reshape)                         (1,1,1,50)                          onnxReshape_39              |                                    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12   node_42 (Gemm)                             (1,1,1,2)                   102     input_27                    |   +408(+100.0%)                     gemm()/o[6]
+                                                                                    fc1_1_weight                |  
+                                                                                    fc1_1_bias                  |  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+model/c-model: macc=14,031/12,671 -1,360(-9.7%) weights=1,916/1,836 -80(-4.2%) activations=--/2,156 io=--/5,008
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : model_1
+c-name                : network
+c-node #              : 7
+c-array #             : 20
+activations size      : 2156 (1 segments)
+weights size          : 1836 (1 segments)
+macc                  : 12671
+inputs                : ['onnxMaxPool_0_output']
+outputs               : ['node_42_output']
+
+C-Arrays (20)
+---------------------------------------------------------------------------------------------------
+c_id   name (*_array)          item/size   domain/mem-pool           c-type        fmt     comment
+---------------------------------------------------------------------------------------------------
+0      onnxMaxPool_0_output    1250/5000   user/                     float         float   /input 
+1      input_output            312/1248    activations/**default**   float         float          
+2      input_3_output          312/1248    activations/**default**   float         float          
+3      input_7_output          515/2060    activations/**default**   float         float          
+4      input_15_output         165/660     activations/**default**   float         float          
+5      input_23_output         50/200      activations/**default**   float         float          
+6      onnxReshape_39_output   50/200      activations/**default**   float         float          
+7      node_42_output          2/8         user/                     float         float   /output
+8      input_3_scale           1/4         weights/                  const float   float          
+9      input_3_bias            1/4         weights/                  const float   float          
+10     input_7_weights         30/120      weights/                  const float   float          
+11     input_7_bias            5/20        weights/                  const float   float          
+12     input_15_weights        150/600     weights/                  const float   float          
+13     input_15_bias           5/20        weights/                  const float   float          
+14     input_23_weights        150/600     weights/                  const float   float          
+15     input_23_bias           5/20        weights/                  const float   float          
+16     onnxReshape_39_scale    5/20        weights/                  const float   float          
+17     onnxReshape_39_bias     5/20        weights/                  const float   float          
+18     fc1_1_bias              2/8         weights/                  const float   float          
+19     fc1_1_weight            100/400     weights/                  const float   float          
+---------------------------------------------------------------------------------------------------
+
+C-Layers (7)
+----------------------------------------------------------------------------------------------------
+c_id   name (*_layer)   id   layer_type   macc   rom   tensors                     shape (array id)
+----------------------------------------------------------------------------------------------------
+0      input            0    pool         1560   0     I: onnxMaxPool_0_output     (1,1250,1,1) (0)
+                                                       O: input_output             (1,312,1,1) (1) 
+----------------------------------------------------------------------------------------------------
+1      input_3          1    bn           624    8     I: input_output             (1,312,1,1) (1) 
+                                                       W: input_3_scale            (1,1,1,1) (8)   
+                                                       W: input_3_bias             (1,1,1,1) (9)   
+                                                       O: input_3_output           (1,312,1,1) (2) 
+----------------------------------------------------------------------------------------------------
+2      input_7          3    conv2d       3610   140   I: input_3_output           (1,312,1,1) (2) 
+                                                       W: input_7_weights          (1,5,6,1) (10)  
+                                                       W: input_7_bias             (1,1,1,5) (11)  
+                                                       O: input_7_output           (1,103,1,5) (3) 
+----------------------------------------------------------------------------------------------------
+3      input_15         6    conv2d       5120   620   I: input_7_output           (1,103,1,5) (3) 
+                                                       W: input_15_weights         (5,5,6,1) (12)  
+                                                       W: input_15_bias            (1,1,1,5) (13)  
+                                                       O: input_15_output          (1,33,1,5) (4)  
+----------------------------------------------------------------------------------------------------
+4      input_23         9    conv2d       1555   620   I: input_15_output          (1,33,1,5) (4)  
+                                                       W: input_23_weights         (5,5,6,1) (14)  
+                                                       W: input_23_bias            (1,1,1,5) (15)  
+                                                       O: input_23_output          (1,10,1,5) (5)  
+----------------------------------------------------------------------------------------------------
+5      onnxReshape_39   10   bn           100    40    I: input_23_output          (1,10,1,5) (5)  
+                                                       W: onnxReshape_39_scale     (1,1,1,5) (16)  
+                                                       W: onnxReshape_39_bias      (1,1,1,5) (17)  
+                                                       O: onnxReshape_39_output    (1,10,1,5) (6)  
+----------------------------------------------------------------------------------------------------
+6      node_42          12   gemm         102    408   I: onnxReshape_39_output0   (1,1,1,50) (6)  
+                                                       I: fc1_1_weight             (1,2,1,50) (19) 
+                                                       I: fc1_1_bias               (1,1,1,2) (18)  
+                                                       O: node_42_output           (1,1,1,2) (7)   
+----------------------------------------------------------------------------------------------------
+
+
+
+Complexity report per layer - macc=12,671 weights=1,836 act=2,156 ram_io=5,008
+-------------------------------------------------------------------------------
+id   name             c_macc                    c_rom                     c_id
+-------------------------------------------------------------------------------
+0    input            |||||             12.3%   |                  0.0%   [0] 
+1    input_3          ||                 4.9%   |                  0.4%   [1] 
+2    input_7          |||||||||||       28.5%   ||||               7.6%   [2] 
+5    input_15         ||||||||||||||||  40.4%   ||||||||||||||||  33.8%   [3] 
+8    input_23         |||||             12.3%   ||||||||||||||||  33.8%   [4] 
+10   onnxReshape_39   |                  0.8%   |                  2.2%   [5] 
+12   node_42          |                  0.8%   ||||||||||        22.2%   [6] 
+
+Generated files (5)
+-----------------------------------------------------------------------
+C:\Users\alhinai\.stm32cubemx\network_output\network_config.h
+C:\Users\alhinai\.stm32cubemx\network_output\network.h
+C:\Users\alhinai\.stm32cubemx\network_output\network.c
+C:\Users\alhinai\.stm32cubemx\network_output\network_data.h
+C:\Users\alhinai\.stm32cubemx\network_output\network_data.c
